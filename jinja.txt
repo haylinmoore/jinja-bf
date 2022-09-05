@@ -1,4 +1,6 @@
-{% set ns = namespace(i=0, cursor=cursor, stack=stack, output="", loopstack=[], skip=false) %}      
+{% set ns = namespace(i=0, cursor=((stack|length)/2), stack=stack, output="", loopstack=[], skip=false) %}      
+{% set cl = code|length %}
+{% set l = [0] %}
 
 {% for j in l %}
     {% if ns.skip %}

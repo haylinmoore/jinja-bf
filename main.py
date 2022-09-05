@@ -6,12 +6,9 @@ for n in range(255):
 stack = {}
 for n in range(32):
   stack[n] = 0
-cursor = len(stack)/2
 code = "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++."
-cl = len(code)
-l = [0] 
 
 environment = Environment(loader=FileSystemLoader("./"))
 template = environment.get_template("jinja.txt")
 
-print(template.render(stack=stack, cursor=cursor, code=code, cl=cl, l=l, lookup=lookup))
+print(template.render(stack=stack, code=code, lookup=lookup))
