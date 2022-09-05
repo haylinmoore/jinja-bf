@@ -1,0 +1,33 @@
+{% set ns = namespace(i=0, cursor=cursor, stack=stack, output="", loopstack=[], skip=false) %}      
+
+{% for j in l %}
+    {% if ns.skip %}
+        {% if code[ns.i] == "]" %}
+            {% if stack[ns.cursor] == 0 %}{% set ns.skip = false %}{% endif %}
+        {% endif %}
+    {% else %}
+        {% if code[ns.i] == "+" %}{% set tmp = stack.update({(ns.cursor):stack[ns.cursor]+1}) %}{% endif %}
+        {% if code[ns.i] == "-" %}{% set tmp = stack.update({(ns.cursor):stack[ns.cursor]-1}) %}{% endif %}
+        {% if stack[ns.cursor] < 0 %}{% set tmp = stack.update({(ns.cursor):255}) %}{% endif %}
+        {% if stack[ns.cursor] > 255 %}{% set tmp = stack.update({(ns.cursor):0}) %}{% endif %}
+        {% if code[ns.i] == ">" %}{% set ns.cursor = ns.cursor+1 %}{% endif %}
+        {% if code[ns.i] == "<" %}{% set ns.cursor = ns.cursor-1 %}{% endif %}
+        {% if code[ns.i] == "." %}{% set ns.output = ns.output + lookup[stack[ns.cursor]] %}{% endif %}
+        {% if code[ns.i] == "[" %}
+            {% if stack[ns.cursor] == 0 %}{% set ns.skip = true %}{% endif %}
+            {% if stack[ns.cursor] != 0 %}{% set tmp = ns.loopstack.append(ns.i) %}{% endif %}
+        {% endif %}
+        {% if code[ns.i] == "]" %}
+            {% if stack[ns.cursor] != 0 %}{% set ns.i = ns.loopstack|last %}{% endif %}
+            {% if stack[ns.cursor] == 0 %}{% set tmp = ns.loopstack.pop() %}{% endif %}
+        {% endif %}
+    {% endif %}
+    {% if ns.i < cl-1 %}
+        {% set ns.i = ns.i+1 %}
+        {% set tmp = l.append(0) %}
+    {% endif %}
+{% endfor %}
+{{ns.loopstack|length}}
+{{code}}
+{{stack}}
+{{ns.output}}
